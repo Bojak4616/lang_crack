@@ -20,10 +20,33 @@ def hash_text(hash_type, plaintext):
         return None
 
 
+def bruteforce_handling(hash_type, hash_file):
+    cracked = {}
+
+    return cracked
+
+
+def wordlist_handling(hash_type, hash_file, wordlist_file):
+    cracked = {}
+
+    try:
+        for password in wordlist_file:
+            for hash in hash_file:
+                if hash_text(hash_type, password) == hash.rstrip('\n'):
+                    cracked[password.rstrip('\n')] = hash.rstrip('\n')
+
+    except KeyboardInterrupt:
+        print "[*] Cleaning up"
+        return cracked
+
+    return cracked
+
+
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", help="Specify Verbose", action="store_true")
-    parser.add_argument("hash_type", help="Supported hash types are MD5, SHA1, SHA256", type=str)
+    parser.add_argument("hash_type", help="Supported hash types are md5, sha1, sha256", choices=["md5", "sh1", "sha256"],
+                        type=str)
     parser.add_argument("attack_type", help="Supported hash types are bruteforce(bf) or wordlist(wl). If wl, then specify file.",
                         choices=["bf", "wl"], type=str)
     parser.add_argument("hash_file", type=argparse.FileType('rb', 0), help="File containing hashed passwords")
@@ -39,18 +62,22 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-
-    hash_file = args.hash_file
     output_file = args.output
-    attack_type = args.attack_type
-    hash_type = args.hash_type
-    wordlist_file = ""
+
     try:
         wordlist_file = args.wordlist
     except AttributeError:
+        wordlist_file = ""
         pass
 
-    print args
+    if args.attack_type == 'wl':
+            for key, value in wordlist_handling(args.hash_type, args.hash_file, wordlist_file).iteritems():
+                print key + ' : ' + value
+
+    elif args.attack_type == 'bf':
+            print bruteforce_handling(args.hash_type, args.hash_file)
+
+
 
 
 
