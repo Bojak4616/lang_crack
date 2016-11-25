@@ -49,6 +49,8 @@ def bruteforce_handling(language, hash_type, hash_file):
         for kor_charset_2 in range(44032, 55215):
             charset += unichr(kor_charset_2)
 
+        charset = charset.encode(encoding='UTF-8')
+
     elif language == "rus":
         # 103 total possible charcters
         for ascii_char in range(32, 64):
@@ -63,7 +65,10 @@ def bruteforce_handling(language, hash_type, hash_file):
         for rus_charset in range(1040, 1103):
             charset += unichr(rus_charset)
 
-    elif language == "chin":
+        charset = charset.encode(encoding='UTF-8')
+
+    elif language == "CJ":
+        # 1078 total characters
         for ascii_char in range(32, 64):
             charset += chr(ascii_char)
 
@@ -72,18 +77,24 @@ def bruteforce_handling(language, hash_type, hash_file):
 
         for ascii_char in range(123, 126):
             charset += chr(ascii_char)
-            
-        pass
+
+        for uni_charset in range(19968, 21006):
+            charset += unichr(uni_charset)
+
+        charset = charset.encode(encoding='UTF-8')
+
 
     cracked = {}
 
-    print "[+] Press CTRL+C to stop cracking"
+    print "[*] Press CTRL+C to stop cracking"
 
     try:
         for guess in bruteforcer(charset, 100):
             for hash in hash_file:
                 hash = hash.rstrip('\n')
                 if hash_text(hash_type, guess) == hash:
+                    if guess in cracked:
+                        continue
                     print "[+] Hash '" + hash + "' cracked with plaintext of '" + guess + "'"
                     cracked[guess] = hash
 
@@ -99,13 +110,15 @@ def bruteforce_handling(language, hash_type, hash_file):
 def wordlist_handling(hash_type, hash_file, wordlist_file):
     cracked = {}
 
-    print "[+] Press CTRL+C to stop cracking"
+    print "[*] Press CTRL+C to stop cracking"
     try:
         for guess in wordlist_file:
             guess = guess.rstrip('\n')
             for hash in hash_file:
                 hash = hash.rstrip('\n')
                 if hash_text(hash_type, guess) == hash:
+                    if guess in cracked:
+                        continue
                     print "[+] Hash: '" + hash + "' cracked with plaintext of '" + guess + "'"
                     cracked[guess] = hash
 
@@ -121,8 +134,8 @@ def wordlist_handling(hash_type, hash_file, wordlist_file):
 def parse_args():
     parser = argparse.ArgumentParser()
     parser.add_argument("-v", help="Specify Verbose", action="store_true")
-    parser.add_argument("language", help="Supported languages are English, Korean, Russian, Chinese",
-                        choices=["eng", "kor", "rus", "chin"], type=str)
+    parser.add_argument("language", help="Supported languages are English, Korean, Russian, Chinese/Japanese",
+                        choices=["eng", "kor", "rus", "cj"], type=str)
     parser.add_argument("hash_type", help="Supported hash types are md5, sha1, sha256", choices=["md5", "sh1", "sha256"],
                         type=str)
     parser.add_argument("attack_type", help="Supported hash types are bruteforce(bf) or wordlist(wl). If wl, then specify file.",
