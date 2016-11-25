@@ -3,7 +3,7 @@
 import argparse
 import hashlib
 import itertools
-from time import sleep
+from sys import exit
 
 __author__ = "Jesse Buonanno"
 
@@ -154,7 +154,6 @@ def parse_args():
 if __name__ == '__main__':
 
     args = parse_args()
-    print args
     output_file = args.output
 
     try:
@@ -165,14 +164,12 @@ if __name__ == '__main__':
 
     if args.attack_type == 'wl':
             for key, value in wordlist_handling(args.hash_type, args.hash_file, wordlist_file).iteritems():
-                print key + ' : ' + value
+                output_file.write(key + ':' + value + '\n')
 
     elif args.attack_type == 'bf':
-            print bruteforce_handling(args.language, args.hash_type, args.hash_file)
+            for key, value in bruteforce_handling(args.language, args.hash_type, args.hash_file).iteritems():
+                output_file.write(key + ':' + value + '\n')
 
+    print "[*]Check " + output_file.name + " for list of cracked passwords!"
 
-
-
-
-
-
+    exit(0)
