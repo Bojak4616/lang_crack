@@ -28,10 +28,21 @@ def bruteforce_handling(language, hash_type, hash_file):
     charset = ""
 
     if language == "eng":
+        # 94 total possible characters
         for ascii_char in range(32, 126):
             charset += chr(ascii_char)
 
     elif language == "kor":
+        # 11272 total possible characters
+        for ascii_char in range(32, 64):
+            charset += chr(ascii_char)
+
+        for ascii_char in range(91, 96):
+            charset += chr(ascii_char)
+
+        for ascii_char in range(123, 126):
+            charset += chr(ascii_char)
+
         for kor_charset_1 in range(12593, 12642):
             charset += unichr(kor_charset_1)
 
@@ -39,9 +50,29 @@ def bruteforce_handling(language, hash_type, hash_file):
             charset += unichr(kor_charset_2)
 
     elif language == "rus":
-        pass
+        # 103 total possible charcters
+        for ascii_char in range(32, 64):
+            charset += chr(ascii_char)
+
+        for ascii_char in range(91, 96):
+            charset += chr(ascii_char)
+
+        for ascii_char in range(123, 126):
+            charset += chr(ascii_char)
+
+        for rus_charset in range(1040, 1103):
+            charset += unichr(rus_charset)
 
     elif language == "chin":
+        for ascii_char in range(32, 64):
+            charset += chr(ascii_char)
+
+        for ascii_char in range(91, 96):
+            charset += chr(ascii_char)
+
+        for ascii_char in range(123, 126):
+            charset += chr(ascii_char)
+            
         pass
 
     cracked = {}
@@ -57,7 +88,6 @@ def bruteforce_handling(language, hash_type, hash_file):
                     cracked[guess] = hash
 
             hash_file.seek(0, 0)
-
 
     except KeyboardInterrupt:
         print "[*] Cleaning up"
